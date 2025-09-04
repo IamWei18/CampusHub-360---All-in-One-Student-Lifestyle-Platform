@@ -132,6 +132,7 @@ For support, email campusHub.support@example.com or join our Discord community.
 Built for [Codenection] 2025 with ❤️ by Team [Ctrl C+V]
 
 
+---
 > **CampusHub-360 – Redefining student life, one feature at a time. 🎓✨**  
 > This repository clearly addresses the *Student Lifestyle* track and shows how the platform improves how students live, learn, and connect.  
 > The README documents the solution’s **features, tech stack, and impact** in detail.
