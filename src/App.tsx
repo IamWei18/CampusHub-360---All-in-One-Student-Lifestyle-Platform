@@ -282,6 +282,7 @@ export default function App() {
       <FloatingAIAssistant
         isOpen={isAIAssistantOpen}
         onToggle={toggleAIAssistant}
+        onNavigate={setActiveSection}
       />
     </SidebarProvider>
   );

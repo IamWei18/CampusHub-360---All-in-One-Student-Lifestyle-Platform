@@ -740,7 +740,7 @@ export function FriendFinder() {
               <div className="space-y-2 text-sm">
                 <p>• <strong>Peak Activity:</strong> Most students in your major are online between 2-4 PM</p>
                 <p>• <strong>Study Groups:</strong> 73% of CS students prefer collaborative learning</p>
-                <p>��� <strong>Common Interests:</strong> Photography and coding often go together in your network</p>
+                <p>• <strong>Common Interests:</strong> Photography and coding often go together in your network</p>
                 <p>• <strong>Language Match:</strong> You might connect well with Mandarin speakers based on your profile</p>
               </div>
             </CardContent>

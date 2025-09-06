@@ -7,9 +7,10 @@ import { AIBotAssistant } from './AIBotAssistant'
 interface FloatingAIAssistantProps {
   isOpen: boolean
   onToggle: () => void
+  onNavigate?: (section: string) => void
 }
 
-export function FloatingAIAssistant({ isOpen, onToggle }: FloatingAIAssistantProps) {
+export function FloatingAIAssistant({ isOpen, onToggle, onNavigate }: FloatingAIAssistantProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
@@ -173,7 +174,7 @@ export function FloatingAIAssistant({ isOpen, onToggle }: FloatingAIAssistantPro
         {!isMinimized && (
           <CardContent className="flex-1 p-0 overflow-hidden">
             <div className="h-full">
-              <AIBotAssistant isFloating={true} />
+              <AIBotAssistant isFloating={true} onNavigate={onNavigate} />
             </div>
           </CardContent>
         )}

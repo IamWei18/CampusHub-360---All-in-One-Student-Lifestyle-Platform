@@ -202,9 +202,25 @@ export function SchoolMap() {
     <div className="space-y-6">
       <Tabs defaultValue="map" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="map">Interactive Map</TabsTrigger>
-          <TabsTrigger value="locations">Locations</TabsTrigger>
-          <TabsTrigger value="transport">Transport</TabsTrigger>
+          <TabsTrigger
+            value="map"
+            className="data-[state=active]:bg-black data-[state=active]:text-white"
+          >
+            Interactive Map
+          </TabsTrigger>
+          <TabsTrigger
+            value="locations"
+            className="data-[state=active]:bg-black data-[state=active]:text-white"
+          >
+            Locations
+          </TabsTrigger>
+          <TabsTrigger
+            value="transport"
+            className="data-[state=active]:bg-black data-[state=active]:text-white"
+          >
+            Transport
+          </TabsTrigger>
+
         </TabsList>
 
         <TabsContent value="map" className="space-y-4">
@@ -259,8 +275,8 @@ export function SchoolMap() {
                       <div className="absolute top-8 right-8 w-24 h-20 bg-orange-200 rounded border-2 border-orange-300 flex items-center justify-center">
                         <span className="text-xs font-medium">Student Center</span>
                       </div>
-                      <div className="absolute bottom-8 right-8 w-20 h-16 bg-purple-200 rounded border-2 border-purple-300 flex items-center justify-center">
-                        <span className="text-xs font-medium">Sports Center</span>
+                      <div className="absolute bottom-8 right-8 w-20 h-16 bg-purple-200 rounded border-2 border-purple-300 flex items-center justify-center text-center">
+                        <span className="text-xs font-medium text-center">Sports Center</span>
                       </div>
                     </>
                   )}
@@ -463,8 +479,8 @@ export function SchoolMap() {
                 {busRoutes.map((bus, index) => (
                   <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-8 bg-campus-navy rounded flex items-center justify-center">
-                        <span className="text-sm font-medium text-white">{bus.platform}</span>
+                      <div className="w-20 h-8 bg-blue-600 rounded flex items-center justify-center">
+                        <span className="text-sm font-medium text-white">Platform {bus.platform}</span>
                       </div>
                       <div>
                         <p className="font-medium">{bus.route}</p>

@@ -4,119 +4,125 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { Badge } from './ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from './ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
-import { 
-  MessageSquare, 
-  Heart, 
-  Flag, 
-  Plus, 
+import {
+  MessageSquare,
+  Heart,
+  Flag,
+  Plus,
   Filter,
-  TrendingUp,
-  AlertTriangle,
   HelpCircle,
-  MessageCircle,
+  Megaphone,
   Eye,
   EyeOff,
-  Shield
+  ArrowLeft,
+  GraduationCap,
+  Users,
+  BookOpen,
+  UserCheck
 } from 'lucide-react'
 
+// -------------------- Types --------------------
 interface ForumPost {
   id: string
   title: string
   content: string
-  category: 'question' | 'confession' | 'feedback' | 'report'
+  category: 'question' | 'announcement'
   author: string
   isAnonymous: boolean
   timestamp: Date
   likes: number
   replies: number
   tags: string[]
-  priority?: 'low' | 'medium' | 'high'
+  isTutor?: boolean
 }
 
-const forumPosts: ForumPost[] = [
+interface Forum {
+  id: string
+  name: string
+  description: string
+  posts: ForumPost[]
+}
+
+// -------------------- Sample Data --------------------
+const forums: Forum[] = [
   {
-    id: '1',
-    title: 'Bus 101 is always late - need better schedule',
-    content: 'The 8:00 AM bus is consistently 10-15 minutes late, making students miss their first class. Can we get more reliable timing?',
-    category: 'feedback',
-    author: 'anonymous_student_123',
-    isAnonymous: true,
-    timestamp: new Date('2024-03-01T10:30:00'),
-    likes: 47,
-    replies: 12,
-    tags: ['transport', 'schedule', 'punctuality'],
-    priority: 'high'
+    id: 'spm2024',
+    name: 'Software Project Management - Batch 2024',
+    description: 'Discussion and tutoring support for Software Project Management',
+    posts: [
+      {
+        id: '1',
+        title: 'When is class replacement?',
+        content: 'Hi everyone, does anyone know when the replacement for last week’s class will be scheduled?',
+        category: 'question',
+        author: 'student_01',
+        isAnonymous: true,
+        timestamp: new Date('2025-08-20T09:30:00'),
+        likes: 12,
+        replies: 4,
+        tags: ['class', 'schedule']
+      },
+      {
+        id: '2',
+        title: 'Lab session venue change',
+        content: 'Tomorrow’s lab will be held in Lab 302 instead of Lab 201. Please take note.',
+        category: 'announcement',
+        author: 'lecturer_spm',
+        isAnonymous: false,
+        timestamp: new Date('2025-08-22T11:00:00'),
+        likes: 25,
+        replies: 6,
+        tags: ['lab', 'venue', 'announcement'],
+        isTutor: true
+      },
+      {
+        id: '3',
+        title: 'Group project submission',
+        content: 'Reminder: The group project report is due next Friday. Submit via the LMS before 11:59 PM.',
+        category: 'announcement',
+        author: 'lecturer_spm',
+        isAnonymous: false,
+        timestamp: new Date('2025-08-25T15:45:00'),
+        likes: 30,
+        replies: 10,
+        tags: ['project', 'deadline'],
+        isTutor: true
+      }
+    ]
   },
   {
-    id: '2',
-    title: 'Where to find good study groups for Data Structures?',
-    content: 'I\'m struggling with linked lists and trees. Anyone know of active study groups or willing to form one?',
-    category: 'question',
-    author: 'studying_hard',
-    isAnonymous: false,
-    timestamp: new Date('2024-03-02T14:20:00'),
-    likes: 23,
-    replies: 8,
-    tags: ['study', 'computer science', 'help']
-  },
-  {
-    id: '3',
-    title: 'Swimming pool chlorine levels too high',
-    content: 'The pool has been burning eyes and skin lately. I think the chemical balance needs checking.',
-    category: 'report',
-    author: 'anonymous_swimmer',
-    isAnonymous: true,
-    timestamp: new Date('2024-03-02T16:45:00'),
-    likes: 31,
-    replies: 5,
-    tags: ['facilities', 'pool', 'health'],
-    priority: 'medium'
-  },
-  {
-    id: '4',
-    title: 'Feeling overwhelmed with semester workload',
-    content: 'Anyone else struggling to balance 6 courses plus part-time work? How do you manage stress?',
-    category: 'confession',
-    author: 'stressed_student',
-    isAnonymous: true,
-    timestamp: new Date('2024-03-03T09:15:00'),
-    likes: 89,
-    replies: 24,
-    tags: ['mental health', 'workload', 'advice']
-  },
-  {
-    id: '5',
-    title: 'WiFi in Library Level 3 keeps disconnecting',
-    content: 'For the past week, WiFi on Level 3 study area drops every 10-15 minutes. IT department aware?',
-    category: 'report',
-    author: 'tech_frustrated',
-    isAnonymous: false,
-    timestamp: new Date('2024-03-03T11:30:00'),
-    likes: 15,
-    replies: 3,
-    tags: ['wifi', 'library', 'technical'],
-    priority: 'medium'
+    id: 'ds2024',
+    name: 'Data Science - Batch 2024',
+    description: 'Forum for Data Science subject discussions',
+    posts: [
+      {
+        id: '1',
+        title: 'Confused about ANOVA test',
+        content: 'Can someone explain when to use ANOVA vs Chi-square?',
+        category: 'question',
+        author: 'student_05',
+        isAnonymous: false,
+        timestamp: new Date('2025-08-21T14:00:00'),
+        likes: 8,
+        replies: 3,
+        tags: ['statistics', 'test', 'exam']
+      }
+    ]
   }
 ]
 
 const categories = [
   { id: 'all', label: 'All Posts', icon: MessageSquare },
   { id: 'question', label: 'Questions', icon: HelpCircle },
-  { id: 'confession', label: 'Confessions', icon: MessageCircle },
-  { id: 'feedback', label: 'Feedback', icon: TrendingUp },
-  { id: 'report', label: 'Reports', icon: AlertTriangle }
+  { id: 'announcement', label: 'Announcements', icon: Megaphone }
 ]
 
-const priorityColors = {
-  low: 'bg-green-100 text-green-800',
-  medium: 'bg-yellow-100 text-yellow-800',
-  high: 'bg-red-100 text-red-800'
-}
-
+// -------------------- Component --------------------
 export function CampusForum() {
+  const [selectedForum, setSelectedForum] = useState<Forum | null>(null)
   const [activeCategory, setActiveCategory] = useState('all')
   const [sortBy, setSortBy] = useState('recent')
   const [isCreating, setIsCreating] = useState(false)
@@ -128,7 +134,88 @@ export function CampusForum() {
     tags: ''
   })
 
-  const filteredPosts = forumPosts.filter(post => 
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date()
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+    if (diffInHours < 1) return 'Just now'
+    if (diffInHours < 24) return `${diffInHours}h ago`
+    const diffInDays = Math.floor(diffInHours / 24)
+    return `${diffInDays}d ago`
+  }
+
+  const handleCreatePost = () => {
+    if (!selectedForum) return
+    const newPostData: ForumPost = {
+      id: String(selectedForum.posts.length + 1),
+      title: newPost.title,
+      content: newPost.content,
+      category: newPost.category,
+      author: 'current_student',
+      isAnonymous: newPost.isAnonymous,
+      timestamp: new Date(),
+      likes: 0,
+      replies: 0,
+      tags: newPost.tags.split(',').map(t => t.trim()).filter(Boolean)
+    }
+    selectedForum.posts.unshift(newPostData) // prototype only
+    setIsCreating(false)
+    setNewPost({ title: '', content: '', category: 'question', isAnonymous: true, tags: '' })
+  }
+
+  if (!selectedForum) {
+    // Forum Selection Page
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-6 px-4 sm:py-8 sm:px-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl campus-shadow-lg text-white relative overflow-hidden mb-6">
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-white/10"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="p-3 bg-white/20 rounded-full">
+                <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold font-['Poppins']">
+                Campus Forums
+              </h2>
+            </div>
+            <p className="text-blue-50 text-base sm:text-lg mb-4">
+              Join discussions with peers and tutors across different subjects
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span>Collaborate with classmates</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                <span>Subject-specific discussions</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <UserCheck className="h-4 w-4" />
+                <span>Tutor guidance available</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {forums.map(forum => (
+            <Card key={forum.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <CardTitle>{forum.name}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">{forum.description}</p>
+                <Button onClick={() => setSelectedForum(forum)}>Enter Forum</Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Inside a specific forum
+  const filteredPosts = selectedForum.posts.filter(post =>
     activeCategory === 'all' || post.category === activeCategory
   ).sort((a, b) => {
     if (sortBy === 'recent') return b.timestamp.getTime() - a.timestamp.getTime()
@@ -137,140 +224,91 @@ export function CampusForum() {
     return 0
   })
 
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date()
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
-    
-    if (diffInHours < 1) return 'Just now'
-    if (diffInHours < 24) return `${diffInHours}h ago`
-    const diffInDays = Math.floor(diffInHours / 24)
-    return `${diffInDays}d ago`
-  }
-
-  const handleCreatePost = () => {
-    // In a real app, this would submit to a backend
-    console.log('Creating post:', newPost)
-    setIsCreating(false)
-    setNewPost({
-      title: '',
-      content: '',
-      category: 'question',
-      isAnonymous: true,
-      tags: ''
-    })
-  }
-
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 sm:p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-2xl shadow-md mb-6">
         <div>
-          <h2>Campus Forum</h2>
-          <p className="text-muted-foreground">A safe space for student voices and community discussion</p>
+          <h2 className="text-xl sm:text-2xl font-bold">{selectedForum.name}</h2>
+          <p className="text-white/80">{selectedForum.description}</p>
         </div>
-        <Dialog open={isCreating} onOpenChange={setIsCreating}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-1" />
-              New Post
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Create New Post</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Title</label>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setSelectedForum(null)} className="bg-white/20 text-white hover:bg-white/30">
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          </Button>
+          <Dialog open={isCreating} onOpenChange={setIsCreating}>
+            <DialogTrigger asChild>
+              <Button className="bg-white text-indigo-600 hover:bg-gray-100">
+                <Plus className="h-4 w-4 mr-1" /> New Post
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Create New Post</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
                 <Input
                   value={newPost.title}
-                  onChange={(e) => setNewPost({...newPost, title: e.target.value})}
-                  placeholder="What's on your mind?"
+                  onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                  placeholder="Post title"
                 />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Category</label>
-                  <Select value={newPost.category} onValueChange={(value: any) => setNewPost({...newPost, category: value})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="question">Question</SelectItem>
-                      <SelectItem value="confession">Confession</SelectItem>
-                      <SelectItem value="feedback">Feedback</SelectItem>
-                      <SelectItem value="report">Report</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium">Tags (comma separated)</label>
-                  <Input
-                    value={newPost.tags}
-                    onChange={(e) => setNewPost({...newPost, tags: e.target.value})}
-                    placeholder="study, help, technical"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium">Content</label>
+                <Select value={newPost.category} onValueChange={(v: any) => setNewPost({ ...newPost, category: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="question">Question</SelectItem>
+                    <SelectItem value="announcement">Announcement</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  value={newPost.tags}
+                  onChange={(e) => setNewPost({ ...newPost, tags: e.target.value })}
+                  placeholder="Tags (comma separated)"
+                />
                 <Textarea
                   value={newPost.content}
-                  onChange={(e) => setNewPost({...newPost, content: e.target.value})}
-                  placeholder="Share your thoughts, ask questions, or report issues..."
-                  className="min-h-32"
+                  onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+                  placeholder="Write your question or announcement here..."
                 />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex justify-between items-center">
                   <Button
                     variant={newPost.isAnonymous ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setNewPost({...newPost, isAnonymous: !newPost.isAnonymous})}
+                    onClick={() => setNewPost({ ...newPost, isAnonymous: !newPost.isAnonymous })}
                   >
                     {newPost.isAnonymous ? <EyeOff className="h-4 w-4 mr-1" /> : <Eye className="h-4 w-4 mr-1" />}
                     {newPost.isAnonymous ? 'Anonymous' : 'With Profile'}
                   </Button>
-                </div>
-                
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setIsCreating(false)}>Cancel</Button>
-                  <Button onClick={handleCreatePost}>Post</Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setIsCreating(false)}>Cancel</Button>
+                    <Button onClick={handleCreatePost}>Post</Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
-      {/* Filters and Controls */}
+      {/* Filters */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-              <TabsList className="grid w-full grid-cols-5 lg:w-auto">
-                {categories.map((category) => {
-                  const Icon = category.icon
+              <TabsList className="grid w-full grid-cols-3 lg:w-auto">
+                {categories.map(cat => {
+                  const Icon = cat.icon
                   return (
-                    <TabsTrigger key={category.id} value={category.id} className="flex items-center gap-2">
+                    <TabsTrigger key={cat.id} value={cat.id} className="flex items-center gap-2">
                       <Icon className="h-4 w-4" />
-                      <span className="hidden sm:inline">{category.label}</span>
+                      {cat.label}
                     </TabsTrigger>
                   )
                 })}
               </TabsList>
             </Tabs>
-            
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="recent">Recent</SelectItem>
                   <SelectItem value="popular">Popular</SelectItem>
@@ -284,88 +322,58 @@ export function CampusForum() {
 
       {/* Posts */}
       <div className="space-y-4">
-        {filteredPosts.map((post) => {
+        {filteredPosts.map(post => {
           const categoryData = categories.find(c => c.id === post.category)
           const CategoryIcon = categoryData?.icon || MessageSquare
-          
           return (
-            <Card key={post.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  {/* Post Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <CategoryIcon className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <h4>{post.title}</h4>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{post.isAnonymous ? 'Anonymous' : post.author}</span>
-                          <span>•</span>
-                          <span>{formatTimeAgo(post.timestamp)}</span>
-                        </div>
+            <Card key={post.id} className={`hover:shadow-md transition-shadow 
+              ${post.author.toLowerCase().includes("lecturer") ? "bg-blue-50 border-blue-200" : ""}`
+            }>
+              <CardContent className="pt-6 space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <CategoryIcon className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <h4>{post.title}</h4>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span>{post.isAnonymous ? 'Anonymous' : post.author}</span>
+                        {
+                          post.isTutor && 
+                          <Badge className="bg-blue-600 text-white flex items-center gap-1">
+                            <GraduationCap size={14} />
+                            Tutor
+                          </Badge>
+                        }
+                        <span>• {formatTimeAgo(post.timestamp)}</span>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      {post.priority && (
-                        <Badge className={priorityColors[post.priority]}>
-                          {post.priority}
-                        </Badge>
-                      )}
-                      <Badge variant="outline">{categoryData?.label}</Badge>
-                    </div>
                   </div>
-                  
-                  {/* Post Content */}
-                  <p className="text-sm">{post.content}</p>
-                  
-                  {/* Tags */}
-                  {post.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {post.tags.map((tag, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Post Actions */}
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <div className="flex items-center gap-4">
-                      <Button variant="ghost" size="sm" className="gap-1">
-                        <Heart className="h-4 w-4" />
-                        {post.likes}
-                      </Button>
-                      <Button variant="ghost" size="sm" className="gap-1">
-                        <MessageSquare className="h-4 w-4" />
-                        {post.replies}
-                      </Button>
-                    </div>
-                    
-                    <Button variant="ghost" size="sm">
-                      <Flag className="h-4 w-4" />
+                  <Badge variant="outline">{categoryData?.label}</Badge>
+                </div>
+                <p className="text-sm">{post.content}</p>
+                {post.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag, i) => (
+                      <Badge key={i} variant="secondary" className="text-xs">#{tag}</Badge>
+                    ))}
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-2 border-t">
+                  <div className="flex items-center gap-4">
+                    <Button variant="ghost" size="sm" className="gap-1">
+                      <Heart className="h-4 w-4" /> {post.likes}
+                    </Button>
+                    <Button variant="ghost" size="sm" className="gap-1">
+                      <MessageSquare className="h-4 w-4" /> {post.replies}
                     </Button>
                   </div>
+                  <Button variant="ghost" size="sm"><Flag className="h-4 w-4" /></Button>
                 </div>
               </CardContent>
             </Card>
           )
         })}
       </div>
-
-      {/* Moderation Notice */}
-      <Card className="border-green-200 bg-green-50">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-green-600" />
-            <p className="text-sm">
-              <strong>Community Guidelines:</strong> Our AI moderation system and community moderators 
-              ensure a safe, respectful environment. Hate speech, bullying, and spam are automatically flagged and removed.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

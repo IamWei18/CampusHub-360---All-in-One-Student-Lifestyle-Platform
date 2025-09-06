@@ -89,7 +89,6 @@
     --color-red-500: oklch(.637 .237 25.331);
     --color-red-600: oklch(.577 .245 27.325);
     --color-red-700: oklch(.505 .213 27.518);
-    --color-red-800: oklch(.444 .177 26.899);
     --color-orange-50: oklch(.98 .016 73.684);
     --color-orange-100: oklch(.954 .038 75.164);
     --color-orange-200: oklch(.901 .076 70.697);
@@ -563,8 +562,21 @@
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) button {
     font-family: Inter, sans-serif;
     font-size: var(--text-sm);
+    color: #000;
+    cursor: pointer;
+    background-color: #fff;
     font-weight: 500;
     line-height: 1.5;
+    transition: all .2s ease-in-out;
+  }
+
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) button:hover {
+    font-weight: bold;
+  }
+
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) button:active, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) button:focus {
+    color: #fff;
+    background-color: #000;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) input {
@@ -572,6 +584,15 @@
     font-size: var(--text-sm);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) .tabs-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) .tabs-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
@@ -1785,6 +1806,10 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .grid-cols-5 {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
@@ -2517,10 +2542,6 @@
     }
   }
 
-  .bg-red-100 {
-    background-color: var(--color-red-100);
-  }
-
   .bg-red-500 {
     background-color: var(--color-red-500);
   }
@@ -2650,6 +2671,11 @@
 
   .bg-gradient-to-br {
     --tw-gradient-position: to bottom right in oklab;
+    background-image: linear-gradient(var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-to-l {
+    --tw-gradient-position: to left in oklab;
     background-image: linear-gradient(var(--tw-gradient-stops));
   }
 
@@ -2979,6 +3005,12 @@
 
   .via-pink-500 {
     --tw-gradient-via: var(--color-pink-500);
+    --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-via-stops);
+  }
+
+  .via-purple-500 {
+    --tw-gradient-via: var(--color-purple-500);
     --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
     --tw-gradient-stops: var(--tw-gradient-via-stops);
   }
@@ -3534,10 +3566,6 @@
     padding-bottom: calc(var(--spacing) * 8);
   }
 
-  .pl-2 {
-    padding-left: calc(var(--spacing) * 2);
-  }
-
   .pl-4 {
     padding-left: calc(var(--spacing) * 4);
   }
@@ -3856,10 +3884,6 @@
 
   .text-red-600 {
     color: var(--color-red-600);
-  }
-
-  .text-red-800 {
-    color: var(--color-red-800);
   }
 
   .text-secondary-foreground {
@@ -4896,6 +4920,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-pink-600:hover {
+      background-color: var(--color-pink-600);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-primary:hover {
       background-color: var(--primary);
     }
@@ -5004,8 +5034,26 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-white\/30:hover {
+      background-color: #ffffff4d;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-white\/30:hover {
+        background-color: color-mix(in oklab, var(--color-white) 30%, transparent);
+      }
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-yellow-50:hover {
       background-color: var(--color-yellow-50);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-yellow-200:hover {
+      background-color: var(--color-yellow-200);
     }
   }
 
@@ -5198,6 +5246,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:opacity-90:hover {
+      opacity: .9;
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:opacity-100:hover {
       opacity: 1;
     }
@@ -5252,12 +5306,20 @@
     background-color: var(--accent);
   }
 
+  .focus\:bg-gray-100:focus {
+    background-color: var(--color-gray-100);
+  }
+
   .focus\:bg-primary:focus {
     background-color: var(--primary);
   }
 
   .focus\:text-accent-foreground:focus {
     color: var(--accent-foreground);
+  }
+
+  .focus\:text-black:focus {
+    color: var(--color-black);
   }
 
   .focus\:text-primary-foreground:focus {
@@ -5370,6 +5432,10 @@
 
   .focus-visible\:outline-ring:focus-visible {
     outline-color: var(--ring);
+  }
+
+  .active\:cursor-grabbing:active {
+    cursor: grabbing;
   }
 
   .active\:bg-sidebar-accent:active {
@@ -6294,6 +6360,13 @@
   }
 
   @media (width >= 40rem) {
+    .sm\:text-2xl {
+      font-size: var(--text-2xl);
+      line-height: var(--tw-leading, var(--text-2xl--line-height));
+    }
+  }
+
+  @media (width >= 40rem) {
     .sm\:text-3xl {
       font-size: var(--text-3xl);
       line-height: var(--tw-leading, var(--text-3xl--line-height));
@@ -6894,18 +6967,6 @@
 
   .\[\.border-t\]\:pt-6.border-t {
     padding-top: calc(var(--spacing) * 6);
-  }
-
-  :is(.\*\:\[span\]\:last\:flex > *):is(span):last-child {
-    display: flex;
-  }
-
-  :is(.\*\:\[span\]\:last\:items-center > *):is(span):last-child {
-    align-items: center;
-  }
-
-  :is(.\*\:\[span\]\:last\:gap-2 > *):is(span):last-child {
-    gap: calc(var(--spacing) * 2);
   }
 
   :is(.data-\[variant\=destructive\]\:\*\:\[svg\]\:\!text-destructive[data-variant="destructive"] > *):is(svg) {

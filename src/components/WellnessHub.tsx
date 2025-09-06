@@ -19,6 +19,7 @@ import { Input } from "./ui/input";
 import { Checkbox } from "./ui/checkbox";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Switch } from "./ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import {
   LineChart,
   Line,
@@ -71,6 +72,7 @@ import {
   Globe,
   ChevronDown,
   ChevronUp,
+  X,
 } from "lucide-react";
 
 const moodEmojis = [
@@ -269,26 +271,31 @@ const diaryEntries = [
 
 const stressReliefGames = [
   {
+    id: "whack",
     title: "Whack-a-Distraction",
-    description:
-      "Hit your worries away in this therapeutic game",
+    description: "Bonk procrastination away!",
     duration: "2-5 min",
-    icon: Target,
+    icon: "🔨",
     color: "from-pink-500 to-rose-500",
+    buttonText: "Start Whacking",
   },
   {
+    id: "tear",
     title: "To-Do List Tear-Up",
-    description: "Virtually destroy your overwhelming tasks",
+    description: "The most satisfying tear you'll have all day.",
     duration: "1-3 min",
-    icon: FileText,
+    icon: "✂️",
     color: "from-orange-500 to-amber-500",
+    buttonText: "Start Ripping",
   },
   {
+    id: "goblin",
     title: "Gratitude Goblin",
-    description: "Collect positive thoughts and feelings",
+    description: "Show this grump some good things.",
     duration: "3-7 min",
-    icon: Heart,
+    icon: "👺",
     color: "from-green-500 to-emerald-500",
+    buttonText: "Help Him",
   },
 ];
 
@@ -386,6 +393,279 @@ const moodHistoryData = [
   { date: "Sun", mood: 3, note: "Preparing for week" },
 ];
 
+// Game Components
+function WhackADistractionGame({ onClose }: { onClose: () => void }) {
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [gameActive, setGameActive] = useState(false);
+  const [distractions, setDistractions] = useState<Array<{ id: number; position: number; visible: boolean }>>([]);
+
+  useEffect(() => {
+    if (gameActive && timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0) {
+      setGameActive(false);
+    }
+  }, [gameActive, timeLeft]);
+
+  useEffect(() => {
+    if (gameActive) {
+      const interval = setInterval(() => {
+        const newDistraction = {
+          id: Date.now(),
+          position: Math.floor(Math.random() * 9),
+          visible: true,
+        };
+        setDistractions(prev => [...prev, newDistraction]);
+        
+        setTimeout(() => {
+          setDistractions(prev => prev.filter(d => d.id !== newDistraction.id));
+        }, 1500);
+      }, 800);
+      
+      return () => clearInterval(interval);
+    }
+  }, [gameActive]);
+
+  const startGame = () => {
+    setGameActive(true);
+    setScore(0);
+    setTimeLeft(30);
+    setDistractions([]);
+  };
+
+  const whackDistraction = (id: number) => {
+    setScore(prev => prev + 1);
+    setDistractions(prev => prev.filter(d => d.id !== id));
+    // Play bonk sound effect (would be actual audio in production)
+    console.log("Bonk!");
+  };
+
+  return (
+    <div className="text-center space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <div>Score: {score}</div>
+        <div>Time: {timeLeft}s</div>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-2 w-64 h-64 mx-auto">
+        {Array.from({ length: 9 }).map((_, index) => {
+          const distraction = distractions.find(d => d.position === index && d.visible);
+          return (
+            <div
+              key={index}
+              className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center border-2 border-gray-300 cursor-pointer hover:bg-gray-100"
+              onClick={() => distraction && whackDistraction(distraction.id)}
+            >
+              {distraction && (
+                <div className="text-2xl animate-bounce">
+                  📱
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {!gameActive && timeLeft === 30 ? (
+        <Button onClick={startGame} className="bg-pink-500 hover:bg-pink-600">
+          Start Game
+        </Button>
+      ) : !gameActive && timeLeft === 0 ? (
+        <div className="space-y-2">
+          <p className="text-lg font-semibold">Game Over!</p>
+          <p>Final Score: {score}</p>
+          <Button onClick={startGame} className="bg-pink-500 hover:bg-pink-600">
+            Play Again
+          </Button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function TodoTearUpGame({ onClose }: { onClose: () => void }) {
+  const [torn, setTorn] = useState(false);
+  const [tearProgress, setTearProgress] = useState(0);
+
+  const todoItems = [
+    "Study for final exams (5 subjects)",
+    "Complete research paper (10 pages)",
+    "Finish group project presentation",
+    "Submit scholarship applications",
+    "Organize dorm room",
+    "Call parents back",
+    "Exercise (been saying this for weeks)",
+    "Grocery shopping",
+    "Laundry (pile getting scary)",
+    "Fix broken laptop",
+    "Plan spring break",
+    "Find summer internship",
+  ];
+
+  const handleTear = () => {
+    if (tearProgress < 100) {
+      setTearProgress(prev => Math.min(prev + 10, 100));
+      // Play ripping sound effect
+      console.log("Rip!");
+      
+      if (tearProgress + 10 >= 100) {
+        setTimeout(() => setTorn(true), 500);
+      }
+    }
+  };
+
+  const resetGame = () => {
+    setTorn(false);
+    setTearProgress(0);
+  };
+
+  return (
+    <div className="text-center space-y-4">
+      <div className="relative mx-auto w-80 h-96 bg-yellow-50 border border-gray-300 rounded-lg overflow-hidden">
+        {!torn ? (
+          <div 
+            className="p-4 cursor-pointer select-none relative"
+            onClick={handleTear}
+            style={{
+              clipPath: tearProgress > 0 ? `polygon(0 0, ${100 - tearProgress}% 0, ${100 - tearProgress/2}% 100%, 0 100%)` : 'none'
+            }}
+          >
+            <h3 className="font-bold text-lg mb-4 text-red-600">OVERWHELMING TO-DO LIST</h3>
+            <div className="text-left text-sm space-y-1">
+              {todoItems.map((item, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <span>•</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+            
+            {tearProgress > 0 && (
+              <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-transparent to-white opacity-50" />
+            )}
+          </div>
+        ) : (
+          <div className="p-8 flex flex-col items-center justify-center h-full">
+            <div className="text-6xl mb-4">🎉</div>
+            <p className="text-xl font-semibold text-green-600">Stress Released!</p>
+            <p className="text-sm text-gray-600 mt-2">You've virtually destroyed that overwhelming list</p>
+          </div>
+        )}
+      </div>
+
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div 
+          className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+          style={{ width: `${tearProgress}%` }}
+        />
+      </div>
+
+      <p className="text-sm text-gray-600">
+        {!torn ? "Click to tear up your stress!" : "Feel better?"}
+      </p>
+
+      {torn && (
+        <Button onClick={resetGame} className="bg-orange-500 hover:bg-orange-600">
+          Tear Another List
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function GratitudeGoblinGame({ onClose }: { onClose: () => void }) {
+  const [goblinMood, setGoblinMood] = useState(0); // 0 = grumpy, 1 = neutral, 2 = happy
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [score, setScore] = useState(0);
+
+  const positiveItems = [
+    { id: "sun", icon: "☀️", name: "Sunshine" },
+    { id: "coffee", icon: "☕", name: "Coffee" },
+    { id: "music", icon: "🎵", name: "Music" },
+    { id: "friends", icon: "👥", name: "Friends" },
+    { id: "pizza", icon: "🍕", name: "Pizza" },
+    { id: "books", icon: "📚", name: "Books" },
+    { id: "nature", icon: "🌳", name: "Nature" },
+    { id: "games", icon: "🎮", name: "Games" },
+  ];
+
+  const goblinFaces = ["😠", "😐", "😊"];
+  const goblinMessages = [
+    "Grumpy goblin needs cheering up...",
+    "Goblin is feeling a bit better!",
+    "Happy goblin! Great job!"
+  ];
+
+  const handleDragStart = (item: string) => {
+    setDraggedItem(item);
+  };
+
+  const handleDrop = () => {
+    if (draggedItem) {
+      setScore(prev => prev + 1);
+      if (score < 3) {
+        setGoblinMood(Math.min(goblinMood + 1, 2));
+      }
+      // Play happy sound
+      console.log("Goblin happy sound!");
+      setDraggedItem(null);
+    }
+  };
+
+  const resetGame = () => {
+    setGoblinMood(0);
+    setScore(0);
+  };
+
+  return (
+    <div className="text-center space-y-6">
+      <div className="space-y-4">
+        {/* Goblin */}
+        <div 
+          className="w-32 h-32 mx-auto bg-green-100 rounded-full flex items-center justify-center text-6xl cursor-pointer transition-all duration-500 hover:scale-105"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+        >
+          {goblinFaces[goblinMood]}
+        </div>
+        
+        <p className="text-lg font-semibold">{goblinMessages[goblinMood]}</p>
+        <p className="text-sm text-gray-600">Items given: {score}</p>
+      </div>
+
+      {/* Positive Items */}
+      <div className="grid grid-cols-4 gap-4 max-w-md mx-auto">
+        {positiveItems.map((item) => (
+          <div
+            key={item.id}
+            className="w-16 h-16 bg-yellow-100 rounded-lg flex flex-col items-center justify-center cursor-grab active:cursor-grabbing hover:bg-yellow-200 transition-colors"
+            draggable
+            onDragStart={() => handleDragStart(item.id)}
+          >
+            <span className="text-2xl">{item.icon}</span>
+            <span className="text-xs">{item.name}</span>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-sm text-gray-600">
+        Drag positive items to the goblin to cheer them up!
+      </p>
+
+      {goblinMood === 2 && (
+        <div className="space-y-2">
+          <p className="text-lg font-semibold text-green-600">Mission Accomplished! 🎉</p>
+          <Button onClick={resetGame} className="bg-green-500 hover:bg-green-600">
+            Help Another Goblin
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function WellnessHub() {
   const [selectedMood, setSelectedMood] = useState<
     number | null
@@ -401,6 +681,9 @@ export function WellnessHub() {
     useState<NodeJS.Timeout | null>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+
+  // Game Modal States
+  const [activeGame, setActiveGame] = useState<string | null>(null);
 
   // Diary and AI Mood States
   const [diaryContent, setDiaryContent] = useState("");
@@ -423,6 +706,44 @@ export function WellnessHub() {
     useState("");
   const [companionDescription, setCompanionDescription] =
     useState("");
+
+  // For AI Companion
+  const [aiConversation, setAiConversation] = useState<{role: "user" | "ai", text: string}[]>([]);
+  const [textMessage, setTextMessage] = useState("");
+  
+  // Example message sender
+  const sendMessage = () => {
+    if (textMessage.trim()) {
+      setAiConversation([...aiConversation, { role: "user", text: textMessage }]);
+      // TODO: Call your AI backend (text-to-text or speech-to-text)
+      setTimeout(() => {
+        setAiConversation((prev) => [
+          ...prev,
+          { role: "ai", text: "I hear you. That must feel overwhelming, can you tell me more?" },
+        ]);
+      }, 1000);
+      setTextMessage("");
+    }
+  };
+  
+  // Voice recording (placeholder functions)
+  const startRecording = () => {
+    console.log("🎙️ Recording started...");
+    // integrate with Web Speech API or recorder.js
+  };
+  
+  const stopRecording = () => {
+    console.log("🛑 Recording stopped.");
+    // convert speech → text → send to AI → reply
+  };
+
+  const openGame = (gameId: string) => {
+    setActiveGame(gameId);
+  };
+
+  const closeGame = () => {
+    setActiveGame(null);
+  };
 
   const startBreathingExercise = () => {
     setIsBreathingActive(true);
@@ -532,37 +853,6 @@ export function WellnessHub() {
   const averageMood =
     moodHistoryData.reduce((acc, day) => acc + day.mood, 0) /
     moodHistoryData.length;
-
-  // For AI Companion
-  const [aiConversation, setAiConversation] = useState<{role: "user" | "ai", text: string}[]>([]);
-  const [textMessage, setTextMessage] = useState("");
-  
-  // Example message sender
-  const sendMessage = () => {
-    if (textMessage.trim()) {
-      setAiConversation([...aiConversation, { role: "user", text: textMessage }]);
-      // TODO: Call your AI backend (text-to-text or speech-to-text)
-      setTimeout(() => {
-        setAiConversation((prev) => [
-          ...prev,
-          { role: "ai", text: "I hear you. That must feel overwhelming, can you tell me more?" },
-        ]);
-      }, 1000);
-      setTextMessage("");
-    }
-  };
-  
-  // Voice recording (placeholder functions)
-  const startRecording = () => {
-    console.log("🎙️ Recording started...");
-    // integrate with Web Speech API or recorder.js
-  };
-  
-  const stopRecording = () => {
-    console.log("🛑 Recording stopped.");
-    // convert speech → text → send to AI → reply
-  };
-
 
   return (
     <div className="space-y-6 animate-in fade-in-50 duration-500">
@@ -1417,7 +1707,6 @@ export function WellnessHub() {
           </Card>
         </TabsContent>
 
-
         {/* Community Tab */}
         <TabsContent value="community" className="space-y-6">
           {/* Companion Feature */}
@@ -1500,7 +1789,7 @@ export function WellnessHub() {
             <CardContent className="p-4 sm:p-6">
               <div className="space-y-4">
                 {upcomingEvents.map((event, index) => (
-                  <div
+                                    <div
                     key={index}
                     className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-300"
                   >
@@ -1773,15 +2062,15 @@ export function WellnessHub() {
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {stressReliefGames.map((game, index) => (
+                {stressReliefGames.map((game) => (
                   <div
-                    key={index}
+                    key={game.id}
                     className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-300 text-center"
                   >
                     <div
-                      className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${game.color} flex items-center justify-center`}
+                      className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${game.color} flex items-center justify-center text-2xl`}
                     >
-                      <game.icon className="h-8 w-8 text-white" />
+                      {game.icon}
                     </div>
                     <h3 className="font-semibold text-campus-navy mb-2">
                       {game.title}
@@ -1792,8 +2081,12 @@ export function WellnessHub() {
                     <p className="text-xs text-gray-500 mb-4">
                       Duration: {game.duration}
                     </p>
-                    <Button className="w-full" variant="outline">
-                      Play Game
+                    <Button 
+                      onClick={() => openGame(game.id)}
+                      className={`w-full bg-gradient-to-r ${game.color} hover:opacity-90 text-white`}
+                    >
+                      <PlayCircle className="h-4 w-4 mr-2" />
+                      {game.buttonText}
                     </Button>
                   </div>
                 ))}
@@ -1802,6 +2095,30 @@ export function WellnessHub() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Game Modals */}
+      <Dialog open={activeGame !== null} onOpenChange={closeGame}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {activeGame === "whack" && "Whack-a-Distraction"}
+              {activeGame === "tear" && "To-Do List Tear-Up"}
+              {activeGame === "goblin" && "Gratitude Goblin"}
+            </DialogTitle>
+            <DialogDescription>
+              {activeGame === "whack" && "Click on the distractions as they appear to whack them away and relieve stress!"}
+              {activeGame === "tear" && "Click to tear up your overwhelming to-do list and feel the satisfaction of letting go."}
+              {activeGame === "goblin" && "Drag positive items to the grumpy goblin to cheer them up and spread good vibes!"}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4">
+            {activeGame === "whack" && <WhackADistractionGame onClose={closeGame} />}
+            {activeGame === "tear" && <TodoTearUpGame onClose={closeGame} />}
+            {activeGame === "goblin" && <GratitudeGoblinGame onClose={closeGame} />}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

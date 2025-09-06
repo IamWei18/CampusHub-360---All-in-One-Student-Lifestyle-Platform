@@ -231,6 +231,22 @@
       font-size: var(--text-sm);
       font-weight: 500;
       line-height: 1.5;
+  
+      /* Selection styles you asked for */
+      background-color: white;
+      color: black;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+  
+    button:hover {
+      font-weight: bold;
+    }
+  
+    button:active,
+    button:focus {
+      background-color: black;
+      color: white;
     }
 
     input {
@@ -238,6 +254,14 @@
       font-size: var(--text-sm);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
+    }
+
+    .tabs-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .tabs-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   }
 }
