@@ -120,19 +120,15 @@ npm or yarn package manager
 Modern browser with ES6+ support
 
 ## 🤝 Contributing
-We welcome contributions! Please see our Contributing Guidelines for details.
-
-## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+We welcome contributions!
 
 ## 🆘 Support
-For support, email campusHub.support@example.com or join our Discord community.
+For support, email chingyin.yong@gmail.com.
 
 ## 🏆 Hackathon Recognition
 Built for [Codenection] 2025 with ❤️ by Team [Ctrl C+V]
 
-
----
+##
 > **CampusHub-360 – Redefining student life, one feature at a time. 🎓✨**  
 > This repository clearly addresses the *Student Lifestyle* track and shows how the platform improves how students live, learn, and connect.  
 > The README documents the solution’s **features, tech stack, and impact** in detail.
